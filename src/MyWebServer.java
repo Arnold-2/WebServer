@@ -35,7 +35,6 @@ class Worker extends Thread { // extending Thread class so workers can run concu
             // close the socket after use
             CloseConnection(sock);
         } catch (IOException iox){
-            System.out.println(iox);
             CloseConnection(sock);
         }
     }
@@ -59,7 +58,9 @@ class Worker extends Thread { // extending Thread class so workers can run concu
             in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
             // Adding current server time for debugging
+            sb.append("-------------------------------------------------------------\r\n");
             sb.append("<Server Time>" + LocalDate.now() + " " + LocalTime.now() + ": \r\n");
+            sb.append("-------------------------------------------------------------\r\n");
 
             // Read one line from the client
             inText = in.readLine();
@@ -96,7 +97,7 @@ class Worker extends Thread { // extending Thread class so workers can run concu
 
         try{
             // Open a new writer
-            BufferedWriter fWriter = new BufferedWriter(new FileWriter(fileName));
+            BufferedWriter fWriter = new BufferedWriter(new FileWriter(fileName, true));
 
             // Write content to file
             fWriter.write(content);
