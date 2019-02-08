@@ -1,0 +1,46 @@
+-------------------------------------------------------------
+<Server Time>2019-02-06 21:44:10.375: 
+-------------------------------------------------------------
+GET / HTTP/1.1
+Host: localhost:2540
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Cache-Control: max-age=0
+-------------------------------------------------------------
+<Server Time>2019-02-06 21:44:10.403: 
+-------------------------------------------------------------
+GET /favicon.ico HTTP/1.1
+Host: localhost:2540
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Cache-Control: max-age=0
+-------------------------------------------------------------
+<Server Time>2019-02-06 21:44:11.028: 
+-------------------------------------------------------------
+GET / HTTP/1.1
+Host: localhost:2540
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Cache-Control: max-age=0
+-------------------------------------------------------------
+<Server Time>2019-02-06 21:44:11.048: 
+-------------------------------------------------------------
+GET /favicon.ico HTTP/1.1
+Host: localhost:2540
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Cache-Control: max-age=0

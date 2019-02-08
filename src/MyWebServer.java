@@ -9,6 +9,8 @@ import java.time.LocalTime;
 
 class Worker extends Thread { // extending Thread class so workers can run concurrently
     Socket sock; // a socket is endpoint for communication
+    String logFileName = System.getProperty("user.dir") + "\\http-streams.txt";
+    ServerLogger slog = new ServerLogger(logFileName); // server logger to log events to console or to file
 
     // Worker constructor. Initialize local variable
     Worker (Socket s) {
@@ -17,20 +19,86 @@ class Worker extends Thread { // extending Thread class so workers can run concu
 
     // Main functionality to execute when thread starts
     public void run() {
-        PrintStream out = null;
-
         try {
-            // Create objects Reading and Writing data from the socket
+            // Create reader
+            BufferedReader in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            String reqText;
 
-            // Log and print input request
-            ServerLog(sock);
+            // Get output stream
+            PrintStream out = new PrintStream(sock.getOutputStream());
 
-            // **Socket.getOutputStream() returns an OutputStream object that writes bytes to the socket
-            // **PrintStream prints data to the output stream
-            out = new PrintStream(sock.getOutputStream());
+            // Parsing GET request
+            // --Get first line from the request
+            reqText = in.readLine();
+
+            // --If invalid, return 400 Bad request
+            if (!reqText.substring(0, 3).equals("GET")){
+                out.println("HTTP 400: Not a GET request");
+                CloseConnection(sock);
+                return;
+            }
+
+            if (reqText.indexOf("HTTP") < 0){
+                out.println("HTTP 400: Not a HTTP request");
+                CloseConnection(sock);
+                return;
+            }
+
+            // Parse requested file path
+            // substring, length = 2nd space - 1st space
+            String reqFilePath = reqText.substring(reqText.indexOf(" ")
+                    ,reqText.indexOf(" ", reqText.indexOf(" ") + 1));
+
+            slog.appendln(getTimeHdr());
+            slog.appendln("<Request> " + reqText);
+            slog.appendln("<File Path> " + reqFilePath);
+
+            // Ignore /favicon.ico
+            // -- Print out on console
+            // -- send 204 NO CONTENT back to client
+
+            if (reqFilePath.indexOf("/favicon.ico") >= 0){
+                slog.appendln("<Server> Ignoring /FAVICON.ICO request");
+                slog.flush();
+                out.println("HTTP/1.1 204 NO CONTENT");
+                CloseConnection(sock);
+                return;
+            }
+
+            // process request
+            // --parse content type
+            // --file type is the file extension user requested
+            if (reqFilePath.indexOf(".") < 0)
+                reqFilePath = reqFilePath + ".txt";
+
+            String fileType = reqFilePath.substring(reqFilePath.indexOf("."));
+            // --content type is the MIME content type
+            // ----only handle 2 types
+            String contentType = fileType.trim().toUpperCase().equals("HTML") ? "text/html" : "text/plain";
+
+
+            // Get content from the file
+            String fileContent = getFileContent(reqFilePath.trim());
+
+            //slog.append(fileContent);
+
+            // Start building response
+            StringBuilder rep = new StringBuilder();
+
+
+            rep.append("HTTP/1.1 200 OK\r\n");
+            rep.append("Content-Length: " + fileContent.length() + "\r\n");
+            rep.append("Content-Type: " + contentType + "\r\n");
+            // Two crlf before data
+            rep.append("\r\n\r\n");
+            rep.append(fileContent);
 
             // Send response back to client
-            out.println("<MyWebServer> Request received: " + LocalDate.now() + " " + LocalTime.now());
+            out.print(rep.toString());
+            out.flush();
+
+            // Log and print input request
+            slog.flush();
 
             // close the socket after use
             CloseConnection(sock);
@@ -47,48 +115,97 @@ class Worker extends Thread { // extending Thread class so workers can run concu
         }
     }
 
-
-    private void ServerLog(Socket s){
-        BufferedReader in = null; // BufferedReader to read request
-        String inText;
-        String fileName = System.getProperty("user.dir") + "\\http-streams.txt";
-        StringBuffer sb = new StringBuffer();
-
-        try{
-            in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-
-            // Adding current server time for debugging
-            sb.append("-------------------------------------------------------------\r\n");
-            sb.append("<Server Time>" + LocalDate.now() + " " + LocalTime.now() + ": \r\n");
-            sb.append("-------------------------------------------------------------\r\n");
-
-            // Read one line from the client
-            inText = in.readLine();
-
-            // Read all lines
-            while (inText.length() > 0){
-                // Append to output
-                sb.append(inText + "\r\n");
-
-                // Move to next line
-                inText = in.readLine();
-            }
-
-            // Print out to screen
-            System.out.print(sb.toString());
-
-            // Write to log file
-            WriteToFile(fileName, sb.toString());
-
-        } catch (IOException x){
-            System.out.println("Server read error");
-            x.printStackTrace();
-            CloseConnection(sock);
-        }
+    private String getTimeHdr(){
+        return "-------------------------------------------------------------\r\n"
+                + "<Server Time>" + LocalDate.now() + " " + LocalTime.now() + "\r\n"
+                + "-------------------------------------------------------------\r\n";
     }
 
-    private void WriteToFile (String fileName, String content){
-        File f = new File(fileName);
+    private String getFileContent(String path){
+        String ret = null;
+
+        // Assemble final path
+        String dir = System.getProperty("user.dir") + path.replace('/', '\\');
+
+        slog.appendln("<Server> Retrieving data from file: " + dir);
+
+        File f = new File (dir);
+
+        if (f.exists()){
+
+            try{
+                // if file exists, start reading data
+                BufferedReader rdr = new BufferedReader(new FileReader(f));
+
+                StringBuilder sb = new StringBuilder();
+                String tmp;
+                while ((tmp = rdr.readLine())!= null){
+                    sb.append(tmp);
+                    sb.append("\r\n");
+                }
+
+                ret = sb.toString();
+            } catch (IOException x){
+                slog.appendln("Failed reading file: " + x.toString());
+                x.printStackTrace();
+            }
+        } else{
+            slog.appendln("Failed: File does not exist!");
+        }
+
+        return ret;
+    }
+}
+
+// Server logger helper class to help record and generate logs
+class ServerLogger {
+    private StringBuilder privSB;
+    private String privFileName = null;
+
+    // Create a screen logger
+    ServerLogger(){
+        privSB = new StringBuilder();
+    }
+
+    // Create a file logger
+    ServerLogger(String logFileName){
+        privSB = new StringBuilder();
+        this.privFileName = logFileName;
+    }
+
+    // Append one line to log
+    void appendln(String s){
+        privSB.append(s + "\r\n");
+    }
+
+    // Append string to log
+    void append(String s) {
+        privSB.append(s);
+    }
+
+    // flush log to both console and file
+    void flush(){
+        System.out.print(privSB.toString());
+        this.flushToFile();
+    }
+
+    // flush to console only
+    void flushToConsole() {
+        System.out.print(privSB.toString());
+        this.reset();
+    }
+
+    // print out current log without reset
+    void printCurrent() {
+        System.out.print(privSB.toString());
+    }
+
+    // flush to file only
+    void flushToFile() {
+        if (privFileName == null)
+            return;
+
+        File f = new File(this.privFileName);
 
         if (!f.exists()){
             // Create a empty file
@@ -97,10 +214,10 @@ class Worker extends Thread { // extending Thread class so workers can run concu
 
         try{
             // Open a new writer
-            BufferedWriter fWriter = new BufferedWriter(new FileWriter(fileName, true));
+            BufferedWriter fWriter = new BufferedWriter(new FileWriter(this.privFileName, true));
 
             // Write content to file
-            fWriter.write(content);
+            fWriter.write(privSB.toString());
 
             fWriter.close();
 
@@ -108,10 +225,19 @@ class Worker extends Thread { // extending Thread class so workers can run concu
             x.printStackTrace();
         }
 
+        this.reset();
     }
 
+    // reset log string
+    private void reset(){
+        this.privSB = new StringBuilder();
+    }
 
-
+    // get current log content
+    @Override
+    public String toString() {
+        return privSB.toString();
+    }
 }
 
 public class MyWebServer {

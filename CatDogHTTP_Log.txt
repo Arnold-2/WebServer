@@ -1,0 +1,51 @@
+$ java MyTelnetClient condor.depaul.edu
+MyTelnet Client, 1.0.
+
+Using server: condor.depaul.edu, Port: 80
+Enter text to send to the server, <stop> to end: GET /elliott/dog.txt HTTP/1.1
+Enter text to send to the server, <stop> to end: Host: condor.depaul.edu:80
+Enter text to send to the server, <stop> to end:
+Enter text to send to the server, <stop> to end:
+Enter text to send to the server, <stop> to end: stop
+HTTP/1.1 200 OK
+Date: Thu, 07 Feb 2019 16:32:48 GMT
+Server: Apache/2.2.3 (Red Hat)
+Last-Modified: Wed, 07 Oct 2015 20:29:55 GMT
+ETag: "8a1bfc-30-521899bff76c0"
+Accept-Ranges: bytes
+Content-Length: 48
+Content-Type: text/plain
+Connection: close
+
+This is Elliott's dog file on condor. Good job!
+
+
+$ java MyTelnetClient condor.depaul.edu
+MyTelnet Client, 1.0.
+
+Using server: condor.depaul.edu, Port: 80
+Enter text to send to the server, <stop> to end: GET /elliott/cat.html HTTP/1.1
+Enter text to send to the server, <stop> to end: Host: condor.depaul.edu:80
+Enter text to send to the server, <stop> to end:
+Enter text to send to the server, <stop> to end:
+Enter text to send to the server, <stop> to end: stop
+HTTP/1.1 200 OK
+Date: Thu, 07 Feb 2019 16:34:41 GMT
+Server: Apache/2.2.3 (Red Hat)
+Last-Modified: Mon, 05 Oct 2009 20:35:03 GMT
+ETag: "8a1bed-78-475360c5dcbc0"
+Accept-Ranges: bytes
+Content-Length: 120
+Content-Type: text/html
+Connection: close
+
+<html> <body>
+<center>
+
+<h1> This is Elliott's </h1>
+
+<h1>  CAT </h1>
+
+<h1> html file </h1>
+
+</center>
