@@ -37,7 +37,8 @@ class Worker extends Thread { // extending Thread class so workers can run concu
                 CloseConnection();
                 return;
             }
-            System.out.println("<raw>" + reqText);
+
+            //System.out.println("<raw>" + reqText);
 
             // --If invalid, return 400 Bad request
             if (!reqText.substring(0, 3).equals("GET")){
@@ -85,7 +86,8 @@ class Worker extends Thread { // extending Thread class so workers can run concu
             // process request
             // --decide request type
             // ----directory
-            if (reqFilePath.indexOf(".") < 0 && reqFilePath.endsWith("/")){
+            if (reqFilePath.indexOf(".") < 0 ){
+                slog.appendln("<Server> Processing Dir Request...");
                 ProcessDirRequest(reqFilePath, response);
             }
             // ----invalid file path
@@ -95,7 +97,13 @@ class Worker extends Thread { // extending Thread class so workers can run concu
                 CloseConnection();
             }
             // ---- file
+            // ---- fake cgi handler
+            else if (reqFilePath.indexOf("/cgi/") >= 0){
+                slog.appendln("<Server> Processing CGI Request...");
+                ProcessCGIRequest(reqFilePath, response);
+            }
             else{
+                slog.appendln("<Server> Processing File Request...");
                 ProcessFileRequest(reqFilePath, response);
             }
 
@@ -132,7 +140,9 @@ class Worker extends Thread { // extending Thread class so workers can run concu
     // Generate HTML listing all files under given path
     private void ProcessDirRequest(String path, StringBuilder rep){
         // Root path + requested relative path
-        String relativePath = path.trim().replace("/", "\\");
+        String relativePath = path.trim().replace("/", "\\")
+                + (path.trim().endsWith("/") ? "" : "/");
+
         String dir = root + relativePath;
 
         // Start building HTML response
@@ -174,7 +184,7 @@ class Worker extends Thread { // extending Thread class so workers can run concu
         // close the document
         rep.append("</pre></body></html>\r\n");
 
-        System.out.println("<debug 1>\r\n" + rep.toString());
+        //System.out.println("<debug 1>\r\n" + rep.toString());
     }
 
     private String stripFullPath(String fullPath, boolean isDirectory){
@@ -186,6 +196,53 @@ class Worker extends Thread { // extending Thread class so workers can run concu
 
     private void ProcessBadRequest(StringBuilder rep){
         rep.append("Invalid Request");
+    }
+
+    private void ProcessCGIRequest(String path, StringBuilder rep){
+        // Write Header first
+        rep.append("HTTP/1.1 200 OK\r\n");
+        rep.append("Content-Length: " + 800 + "\r\n");
+        rep.append("Content-Type: text/html \r\n");
+        // Two crlf before data
+        rep.append("\r\n\r\n");
+
+        // Check if request was sent by the Form
+        if (path.trim().toUpperCase().indexOf("ADDNUMS.FAKE-CGI?") >= 0){
+            // If it's form request, parse parameters and call addNum
+            String[] parmStr = path.trim().substring(path.trim().indexOf('?') + 1).split("&");
+            String name = parmStr[0].trim().substring(parmStr[0].trim().indexOf('=') + 1);
+            String num1 = parmStr[1].trim().substring(parmStr[1].trim().indexOf('=') + 1);
+            String num2 = parmStr[2].trim().substring(parmStr[2].trim().indexOf('=') + 1);
+
+            slog.appendln("<Parse FORM parms> Name: " + name + "; num1: " + num1 + "; num2: " + num2);
+
+            // Call Addnums function
+            int result = AddNums(Integer.parseInt(num1), Integer.parseInt(num2));
+
+            // Prepare response
+            rep.append("<html>\r\n");
+            rep.append("<pre>\r\n");
+            rep.append("Dear " + name + "! the sum of " + num1 + " and " + num2 + " is " + result + ".\r\n");
+            rep.append("</pre></html>\r\n");
+        } else{
+            // If it's other cgi request, return the html form
+            // Data
+            rep.append("<html>\r\n");
+            rep.append("<head><TITLE> CSC435 Sample Form for AddNum </TITLE></head>\r\n");
+            rep.append("<BODY>\r\n <H1> Addnum </H1>\r\n");
+            rep.append("<FORM method=\"GET\" action=\"http://localhost:2540/cgi/addnums.fake-cgi\">\r\n");
+            rep.append("Enter your name and two numbers:\r\n");
+            rep.append("<INPUT TYPE=\"text\" NAME=\"person\" size=20 value=\"YourName\"><P>\r\n");
+            rep.append("<INPUT TYPE=\"text\" NAME=\"num1\" size=5 value=\"4\"> <br>\r\n");
+            rep.append("<INPUT TYPE=\"text\" NAME=\"num2\" size=5 value=\"5\"> <br>\r\n");
+            rep.append("<INPUT TYPE=\"submit\" VALUE=\"Submit Numbers\">\r\n");
+            rep.append("</FORM> </BODY></html>\r\n");
+        }
+
+    }
+
+    private int AddNums(int num1, int num2){
+        return num1 + num2;
     }
 
     private void ProcessFileRequest(String path, StringBuilder rep){

@@ -3,8 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="3d14fb47-fe1b-4bae-96aa-34618f7073a6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MyTelnetClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MyWebServer.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/MyWebServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/MyWebServer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/http-streams.txt" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="http-streams.txt" />
@@ -18,14 +19,15 @@
     <session id="2038854504">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="7" />
+          <entry key="project.closed" value="9" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.open.time.10" value="1" />
-          <entry key="project.open.time.11" value="2" />
+          <entry key="project.open.time.11" value="3" />
           <entry key="project.open.time.13" value="2" />
           <entry key="project.open.time.14" value="1" />
+          <entry key="project.open.time.21" value="1" />
           <entry key="project.open.time.9" value="1" />
-          <entry key="project.opened" value="8" />
+          <entry key="project.opened" value="10" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
@@ -36,8 +38,8 @@
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="12819" />
-          <entry key="PLAIN_TEXT" value="134" />
+          <entry key="JAVA" value="14930" />
+          <entry key="PLAIN_TEXT" value="161" />
         </counts>
       </usages-collector>
     </session>
@@ -47,15 +49,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/MyWebServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
-              <caret line="144" column="25" selection-start-line="144" selection-start-column="25" selection-end-line="144" selection-end-column="25" />
+            <state relative-caret-position="196">
+              <caret line="144" lean-forward="true" selection-start-line="144" selection-end-line="144" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#5619#5620#0" expanded="true" />
-                <element signature="e#5664#5665#0" expanded="true" />
-                <element signature="method#ProcessFileRequest#0;class#Worker#0" />
+                <element signature="method#stripFullPath#0;class#Worker#0" />
+                <element signature="e#8460#8461#0" expanded="true" />
+                <element signature="e#8493#8494#0" expanded="true" />
                 <element signature="method#getFileContent#0;class#Worker#0" />
-                <element signature="class#ServerLogger#0" />
                 <element signature="class#MyWebServer#0" />
               </folding>
             </state>
@@ -98,8 +99,8 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="757" />
-    <option name="width" value="1170" />
+    <option name="x" value="565" />
+    <option name="width" value="1362" />
     <option name="height" value="1087" />
   </component>
   <component name="ProjectView">
@@ -130,7 +131,8 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1549577104785" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550089683846" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/out/production/WebServer" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -162,9 +164,10 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MyWebServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="MyWebServer" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="MyWebServer" />
       <module name="WebServer" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/out/production/WebServer" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -175,7 +178,6 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.MyWebServer" />
         <item itemvalue="Application.MyTelnetClient" />
       </list>
     </recent_temporary>
@@ -197,7 +199,9 @@
       <workItem from="1549555005585" duration="2096000" />
       <workItem from="1549569026993" duration="3554000" />
       <workItem from="1549577148117" duration="12104000" />
-      <workItem from="1549641585903" duration="13614000" />
+      <workItem from="1549641585903" duration="14605000" />
+      <workItem from="1550074983709" duration="4480000" />
+      <workItem from="1550083680507" duration="3602000" />
     </task>
     <task id="LOCAL-00001" summary="HTTP listener">
       <created>1549494032148</created>
@@ -220,11 +224,18 @@
       <option name="project" value="LOCAL" />
       <updated>1549593636713</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Directory listing completed">
+      <created>1549680987011</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1549680987011</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45841000" />
+    <option name="totallyTimeSpent" value="54914000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -236,10 +247,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="757" y="0" width="1170" height="1087" extended-state="0" />
+    <frame x="565" y="0" width="1362" height="1087" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19729729" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17895545" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -279,18 +290,12 @@
     <MESSAGE value="HTTP listener" />
     <MESSAGE value="Fixed server log issue" />
     <MESSAGE value="Retrieving files completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Retrieving files completed" />
+    <MESSAGE value="Directory listing completed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Directory listing completed" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/InetClient.java" />
     <entry file="file://$PROJECT_DIR$/src/MyTelnetClient.class" />
-    <entry file="file://$PROJECT_DIR$/src/MyTelnetClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="546">
-          <caret line="40" column="47" selection-start-line="40" selection-start-column="47" selection-end-line="40" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_181/src.zip!/java/lang/String.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
@@ -298,17 +303,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/MyTelnetClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="546">
+          <caret line="40" column="47" selection-start-line="40" selection-start-column="47" selection-end-line="40" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/MyWebServer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="144" column="25" selection-start-line="144" selection-start-column="25" selection-end-line="144" selection-end-column="25" />
+        <state relative-caret-position="196">
+          <caret line="144" lean-forward="true" selection-start-line="144" selection-end-line="144" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#5619#5620#0" expanded="true" />
-            <element signature="e#5664#5665#0" expanded="true" />
-            <element signature="method#ProcessFileRequest#0;class#Worker#0" />
+            <element signature="method#stripFullPath#0;class#Worker#0" />
+            <element signature="e#8460#8461#0" expanded="true" />
+            <element signature="e#8493#8494#0" expanded="true" />
             <element signature="method#getFileContent#0;class#Worker#0" />
-            <element signature="class#ServerLogger#0" />
             <element signature="class#MyWebServer#0" />
           </folding>
         </state>
