@@ -1,3 +1,26 @@
+/*--------------------------------------------------------
+
+1. Jilei Hao / Feb 13, 2019
+
+2. JDK 1.8
+
+3. Command line instructions
+
+> javac MyWebServer.java
+> java MyWebServer
+
+
+4. Instructions to run this program:
+
+> java MyWebServer
+
+5. Note:
+
+When parsing CGI requests, I faked the file name check part. The program will return
+the Addnums page to user whenever the request contains "/cgi/". But requests contain
+"AddNums.fake-cgi?" will be parsed as FORM request.
+
+----------------------------------------------------------*/
 
 import java.io.*;
 
@@ -33,7 +56,8 @@ class Worker extends Thread { // extending Thread class so workers can run concu
             // --Get first line from the request
             reqText = in.readLine();
 
-            if (reqText == null){
+            // filter out empty request and parent directory requests
+            if (reqText == null || reqText.indexOf("..") >= 0){
                 CloseConnection();
                 return;
             }
@@ -86,7 +110,7 @@ class Worker extends Thread { // extending Thread class so workers can run concu
             // process request
             // --decide request type
             // ----directory
-            if (reqFilePath.indexOf(".") < 0 ){
+            if (reqFilePath.indexOf(".") < 0 || reqFilePath.indexOf("./") >= 0 || reqFilePath.trim().endsWith("/")){
                 slog.appendln("<Server> Processing Dir Request...");
                 ProcessDirRequest(reqFilePath, response);
             }
@@ -143,7 +167,23 @@ class Worker extends Thread { // extending Thread class so workers can run concu
         String relativePath = path.trim().replace("/", "\\")
                 + (path.trim().endsWith("/") ? "" : "/");
 
-        String dir = root + relativePath;
+        String dir = root + (path.trim().equals("/::/") ? "" : relativePath);
+
+        //System.out.println("Dir: " + dir);
+
+        // Generate parent directory
+        String parentDir;
+
+        // Remove the last leg of the relative Directory
+        if (path.endsWith("/"))
+            parentDir = path.trim().substring(0, path.lastIndexOf("/", path.trim().length() - 1));
+        else
+            parentDir = path.trim().substring(0, path.lastIndexOf("/"));
+
+        //System.out.println("ParentDir: " + parentDir);
+
+        if (parentDir.trim().equals("/"))
+            parentDir = "/::/"; // To get the root directory
 
         // Start building HTML response
         rep.append("HTTP/1.1 200 OK\r\n");
@@ -159,8 +199,21 @@ class Worker extends Thread { // extending Thread class so workers can run concu
         // get all files & directories under startFile
         File[] dirList = startFile.listFiles();
 
+        if (dirList == null){
+            rep.append("Invalid Directory!\r\n </pre></body></html>\r\n");
+            return;
+        }
+
         // write header
-        rep.append("<h1>Index of " + path.trim() + "</h1>");
+        rep.append("<h1>Index of "
+                + (path.trim().equals("/::/") ? "RootDirectory" : path.trim())
+                + "</h1>");
+
+        // write parent directory
+        rep.append("<a href=\"" + parentDir + "\">Parent</a><br>\r\n");
+
+        if (path.trim().equals("/::/"))
+            path = "/";
 
         // print out directory
         for ( int i = 0 ; i < dirList.length ; i ++ ) {
